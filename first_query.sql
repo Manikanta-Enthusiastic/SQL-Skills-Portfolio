@@ -31,30 +31,36 @@ INSERT INTO orders (order_id, customer_id, order_date, order_amount) VALUES
 -- SQL Query to Retrieve Latest and Second-Latest Order Amounts for Each Customer
 
 -- Step 1: Create a Common Table Expression (CTE) named 'RankedOrders'
--- The CTE assigns a rank to each order within each customer group based on the order date in descending order.
+-- This CTE will calculate the dense rank of each order for every customer
 WITH RankedOrders AS (
+    -- Select the necessary columns and compute the dense rank
     SELECT 
-        customer_id, 
-        order_amount,
-        -- ROW_NUMBER() function provides a unique rank to each order within the partitioned customer group
-        ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date DESC) AS rn
+        customer_id,          -- The identifier for the customer
+        order_amount,         -- The amount of the order
+        -- Compute the dense rank for each order based on date and ID
+        DENSE_RANK() OVER (
+            PARTITION BY customer_id          -- Separate ranking for each customer
+            ORDER BY order_date DESC,         -- Order by date in descending order (most recent first)
+                     order_id DESC            -- Order by ID in descending order to handle ties
+        ) AS dr                        -- Dense rank assigned to each order
     FROM 
-        orders
+        orders                        -- The table containing order data
 )
 
--- Step 2: Select the customer_id and calculate the latest and second-latest order amounts
+-- Retrieve the latest and second latest order amounts for each customer
 SELECT 
-    customer_id,
+    customer_id,                         -- The identifier for the customer
     -- Use MAX() with CASE to extract the order amount where the rank is 1 (latest order)
     MAX(CASE 
-        WHEN rn = 1 THEN order_amount END) AS latest_order_amount,
+        WHEN dr = 1 THEN order_amount    
+    END) AS latest_order_amount,
     -- Use MAX() with CASE to extract the order amount where the rank is 2 (second-latest order)
     MAX(CASE
-        WHEN rn = 2 THEN order_amount END) AS second_latest_order_amount
+        WHEN dr = 2 THEN order_amount
+    END) AS second_latest_order_amount
 FROM 
-    RankedOrders
--- Group by customer_id to aggregate results for each customer
+    RankedOrders                       -- Reference the CTE that contains the ranking information
 GROUP BY 
-    customer_id;
+    customer_id;                       -- Group the results by customer to aggregate order amounts
 
 -- End of query
