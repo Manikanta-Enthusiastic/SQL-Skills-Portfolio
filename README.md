@@ -7,7 +7,7 @@ The SQL script provided in this repository performs the following tasks:
 
 Create a Common Table Expression (CTE):
 
-RankedOrders: This CTE ranks each order for every customer based on the order date in descending order using the ROW_NUMBER() function.
+RankedOrders: This CTE ranks each order for every customer based on the order date, order_id in descending order using the DENSE_RANK() function.
 Retrieve Latest and Second-Latest Order Amounts:
 
 The main query selects the customer_id and computes:
