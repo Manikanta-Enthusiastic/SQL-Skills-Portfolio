@@ -1,4 +1,4 @@
-**SQL Skills Portfolio**\
+**SQL Skills Portfolio**
 
 **Overview**
 
