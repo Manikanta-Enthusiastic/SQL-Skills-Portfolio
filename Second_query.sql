@@ -1,3 +1,22 @@
+# 7-Day Moving Average of Customer Payments
+
+This project calculates the 7-day moving average of the total amount paid by customers at a restaurant. It uses SQL to handle a dataset with customer transactions, focusing on computing the moving average over a rolling 7-day window.
+
+## Problem Statement
+
+The dataset contains the following columns:
+- `customer_id`: Unique ID of the customer.
+- `name`: Name of the customer.
+- `visited_on`: Date when the customer visited the restaurant.
+- `amount`: Total amount paid by the customer on that date.
+
+### Goal
+Compute the **7-day moving average** of payments, starting from the 7th record (inclusive), with:
+- A 7-day window (current day + 6 days prior).
+- Average rounded to 2 decimal places.
+- Result sorted by the `visited_on` date.
+
+
 -- Step 1: Drop the existing 'Customer' table if it already exists
 DROP TABLE IF EXISTS Customer;
 
